@@ -2,8 +2,6 @@
 
 A premium, production-grade developer portfolio built with a focus on high-end aesthetics, "Apple-smooth" scrolling, and interactive 3D elements. Designed for a SaaS-level experience with architectural typography and sophisticated animations.
 
-![Portfolio Preview](public/harsh.png) *(Update with a real screenshot once deployed)*
-
 ## ✨ Key Features
 
 - 🍏 **Apple-Smooth Scrolling**: Integrated with **Lenis** for inertial, high-performance scrolling across all browsers.
