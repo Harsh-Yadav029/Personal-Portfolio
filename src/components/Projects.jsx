@@ -17,9 +17,9 @@ const ArrowIcon = () => (
 
 /* ─── Mockup Images ─── */
 const Mockups = {
-  lumen: "/lumen_mockup_1777129062324.png",
-  vidyamitra: "/vidyamitra_mockup_1777129077347.png",
-  mernblog: "/mern_blog_mockup_1777129092544.png",
+  lumen: "/lumen.png",
+  vidyamitra: "/vidyamitra.png",
+  "mern-blog": "/blog.png",
 };
 
 /* ─── 3D Perspective Mockup Stack ─── */
@@ -89,11 +89,12 @@ function MockupStack({ project, reverse }) {
               style={{
                 width: "100%",
                 height: "100%",
-                objectFit: "cover",
-                opacity: i === 2 ? (hovered ? 0.9 : 0.7) : 0.4,
-                transform: hovered && i === 2 ? "scale(1.04)" : "scale(1)",
+                objectFit: "fill",
+                opacity: i === 2 ? 1 : 0.4,
+                transform: hovered && i === 2 ? "scale(1.02)" : "scale(1)",
                 transition: "opacity 0.5s, transform 0.7s ease",
                 display: "block",
+                filter: i === 2 ? "none" : "grayscale(0.5) contrast(1.1)",
               }}
             />
           ) : (
@@ -115,30 +116,6 @@ function MockupStack({ project, reverse }) {
             </div>
           )}
 
-          {/* Bottom gradient overlay on front card */}
-          {i === 2 && (
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background: `linear-gradient(to bottom, transparent 50%, rgba(7,8,12,0.85) 100%)`,
-                pointerEvents: "none",
-              }}
-            />
-          )}
-
-          {/* Screen scanline effect on front card */}
-          {i === 2 && (
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage: "repeating-linear-gradient(0deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 3px)",
-                pointerEvents: "none",
-                zIndex: 2,
-              }}
-            />
-          )}
         </div>
       ))}
 
@@ -368,13 +345,13 @@ function ProjectRow({ project, index }) {
                 textTransform: "uppercase",
                 transition: "color 0.2s, gap 0.2s",
               }}
-              onMouseEnter={(e) => { 
-                e.currentTarget.style.color = accent; 
-                e.currentTarget.style.gap = "0.75rem"; 
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = accent;
+                e.currentTarget.style.gap = "0.75rem";
               }}
-              onMouseLeave={(e) => { 
-                e.currentTarget.style.color = "rgba(232,234,240,0.4)"; 
-                e.currentTarget.style.gap = "0.5rem"; 
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "rgba(232,234,240,0.4)";
+                e.currentTarget.style.gap = "0.5rem";
               }}
             >
               Live Demo <ArrowIcon />
