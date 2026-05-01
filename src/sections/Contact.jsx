@@ -362,7 +362,7 @@ export default function Contact() {
               />
               <div style={{ display: "flex", gap: "1rem" }}>
                 <a
-                  href={`mailto:${personal.email}`}
+                  href={`mailto:${personal.email}?subject=Hello Harsh! - Project Collaboration`}
                   style={{
                     flex: 1,
                     padding: "1rem",
