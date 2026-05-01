@@ -104,21 +104,6 @@ export default function Skills() {
           viewport={viewportSettings}
           variants={fadeUp}
         >
-          <span
-            style={{
-              fontFamily: "'Inter', monospace",
-              fontSize: "0.6rem",
-              letterSpacing: "0.5em",
-              textTransform: "uppercase",
-              color: "#818cf8",
-              fontWeight: 600,
-              display: "block",
-              marginBottom: "0.75rem",
-              opacity: 0.85,
-            }}
-          >
-            Arsenal
-          </span>
           <h2
             style={{
               margin: 0,

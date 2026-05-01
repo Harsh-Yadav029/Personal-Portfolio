@@ -9,10 +9,10 @@ export const personal = {
   status: "Open to Opportunities",
   degree: "B.Tech CSE (AI) · KIET, AKTU · 2027",
   links: {
-    github: "https://github.com/harshyadav2027",
-    linkedin: "https://linkedin.com",
-    leetcode: "https://leetcode.com",
-    instagram: "https://instagram.com/harsh_yadav029",
+    github: "https://github.com/Harsh-Yadav029",
+    linkedin: "https://www.linkedin.com/in/harsh-kumar-yadav-a22092297/",
+    leetcode: "https://leetcode.com/u/HARSHKUMARYADAV/",
+    instagram: "https://www.instagram.com/_harsssh_45?igsh=MW50NmVvN253em90bw==",
   },
 };
 
@@ -33,7 +33,8 @@ export const projects = [
     accent: "#6ee7b7",
     year: "2026",
     featured: true,
-    github: "https://github.com/harshyadav2027",
+    github: "https://github.com/Harsh-Yadav029/LUMEN-AI.git",
+    live: "https://lumen-ai-one.vercel.app/",
   },
   {
     id: "vidyamitra",
@@ -51,7 +52,8 @@ export const projects = [
     accent: "#a78bfa",
     year: "2026",
     featured: false,
-    github: "https://github.com/harshyadav2027",
+    github: "https://github.com/Harsh-Yadav029/VidyaMitra.git",
+    live: "https://vidya-mitra-opal.vercel.app/",
   },
   {
     id: "mern-blog",
@@ -69,7 +71,8 @@ export const projects = [
     accent: "#f472b6",
     year: "2025",
     featured: false,
-    github: "https://github.com/harshyadav2027",
+    github: "https://github.com/Harsh-Yadav029/BLOG_SITE.git",
+    live: "https://blog-site-ps2h.vercel.app/",
   },
 ];
 

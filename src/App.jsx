@@ -29,6 +29,8 @@ function App() {
       infinite: false,
     });
 
+    window.lenis = lenis;
+    
     function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -46,6 +48,7 @@ function App() {
       window.removeEventListener('resize', onResize);
       clearTimeout(timer);
       lenis.destroy();
+      window.lenis = null;
     };
   }, []);
 

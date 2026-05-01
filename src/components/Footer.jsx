@@ -39,7 +39,7 @@ const socials = [
   },
   {
     label: "Instagram",
-    href: "https://instagram.com/harsh_yadav029",
+    href: "https://www.instagram.com/_harsssh_45?igsh=MW50NmVvN253em90bw==",
     icon: (
       <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "none", stroke: "currentColor", strokeWidth: 2 }}>
         <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />

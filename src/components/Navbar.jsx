@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
@@ -12,39 +12,80 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("Home");
+  const isScrolling = useRef(false);
 
   useEffect(() => {
+    // ─── Scroll listener for background opacity ───
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
-
-      // Update active section based on scroll position
-      const sections = navLinks.map(l => l.href.substring(1));
-      for (const section of sections.reverse()) {
-        const element = document.getElementById(section);
-        if (element && window.scrollY >= element.offsetTop - 150) {
-          const link = navLinks.find(l => l.href === `#${section}`);
-          if (link) setActiveSection(link.label);
-          break;
-        }
-      }
     };
 
+    // ─── IntersectionObserver for active section tracking (High Performance) ───
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -70% 0px", // Trigger when section is in the upper part of the viewport
+      threshold: 0,
+    };
+
+    const observerCallback = (entries) => {
+      // Don't update active section while we are manually scrolling from a click
+      if (isScrolling.current) return;
+
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          const link = navLinks.find((l) => l.href === `#${id}`);
+          if (link) {
+            setActiveSection(link.label);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    // Observe all sections
+    navLinks.forEach((link) => {
+      const section = document.querySelector(link.href);
+      if (section) observer.observe(section);
+    });
+
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
+    };
   }, []);
 
-  const scrollToSection = (e, href) => {
+  const scrollToSection = (e, href, label) => {
     e.preventDefault();
     const element = document.querySelector(href);
     if (element) {
-      const offset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      isScrolling.current = true;
+      setActiveSection(label);
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
-      });
+      const offset = 80;
+
+      if (window.lenis) {
+        window.lenis.scrollTo(element, {
+          offset: -offset,
+          duration: 1.2,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        });
+      } else {
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+      }
+
+      // Reset the flag after scroll completes
+      setTimeout(() => {
+        isScrolling.current = false;
+      }, 1000);
     }
   };
 
@@ -66,7 +107,7 @@ export default function Navbar() {
       {/* Premium Logo Design */}
       <a
         href="#hero"
-        onClick={(e) => scrollToSection(e, "#hero")}
+        onClick={(e) => scrollToSection(e, "#hero", "Home")}
         style={{
           display: "flex",
           alignItems: "center",
@@ -143,10 +184,7 @@ export default function Navbar() {
           <a
             key={link.label}
             href={link.href}
-            onClick={(e) => {
-              setActiveSection(link.label);
-              scrollToSection(e, link.href);
-            }}
+            onClick={(e) => scrollToSection(e, link.href, link.label)}
             style={{
               padding: "0.6rem 1.25rem",
               borderRadius: "100px",
@@ -195,7 +233,7 @@ export default function Navbar() {
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
         <a
           href="#contact"
-          onClick={(e) => scrollToSection(e, "#contact")}
+          onClick={(e) => scrollToSection(e, "#contact", "Contact")}
           style={{
             padding: "0.65rem 1.4rem",
             borderRadius: "100px",

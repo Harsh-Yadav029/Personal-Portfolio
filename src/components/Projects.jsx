@@ -19,7 +19,7 @@ const ArrowIcon = () => (
 const Mockups = {
   lumen: "/lumen_mockup_1777129062324.png",
   vidyamitra: "/vidyamitra_mockup_1777129077347.png",
-  "mern-blog": "/mern_blog_mockup_1777129092544.png",
+  mernblog: "/mern_blog_mockup_1777129092544.png",
 };
 
 /* ─── 3D Perspective Mockup Stack ─── */
@@ -352,7 +352,7 @@ function ProjectRow({ project, index }) {
             </a>
             <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.1)" }} />
             <a
-              href={project.github}
+              href={project.live}
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -368,8 +368,14 @@ function ProjectRow({ project, index }) {
                 textTransform: "uppercase",
                 transition: "color 0.2s, gap 0.2s",
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = "#e8eaf0"; e.currentTarget.style.gap = "0.75rem"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(232,234,240,0.4)"; e.currentTarget.style.gap = "0.5rem"; }}
+              onMouseEnter={(e) => { 
+                e.currentTarget.style.color = accent; 
+                e.currentTarget.style.gap = "0.75rem"; 
+              }}
+              onMouseLeave={(e) => { 
+                e.currentTarget.style.color = "rgba(232,234,240,0.4)"; 
+                e.currentTarget.style.gap = "0.5rem"; 
+              }}
             >
               Live Demo <ArrowIcon />
             </a>
@@ -555,57 +561,6 @@ export default function Projects() {
           ))}
         </div>
 
-        {/* ── Bottom CTA ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            marginTop: "2.5rem",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <a
-            href="https://github.com/harshyadav2027"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              padding: "0.9rem 2.4rem",
-              border: "1px solid rgba(255,255,255,0.1)",
-              borderRadius: 10,
-              background: "rgba(255,255,255,0.02)",
-              fontFamily: "monospace",
-              fontSize: "0.75rem",
-              letterSpacing: "0.1em",
-              color: "rgba(232,234,240,0.5)",
-              textDecoration: "none",
-              textTransform: "uppercase",
-              fontWeight: 600,
-              transition: "border-color 0.3s, color 0.3s, background 0.3s, transform 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "rgba(34,211,238,0.4)";
-              e.currentTarget.style.color = "#22d3ee";
-              e.currentTarget.style.background = "rgba(34,211,238,0.04)";
-              e.currentTarget.style.transform = "translateY(-2px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
-              e.currentTarget.style.color = "rgba(232,234,240,0.5)";
-              e.currentTarget.style.background = "rgba(255,255,255,0.02)";
-              e.currentTarget.style.transform = "none";
-            }}
-          >
-            <GitHubIcon />
-            View All on GitHub
-            <ArrowIcon />
-          </a>
-        </motion.div>
       </div>
 
       <style>{`
