@@ -142,12 +142,12 @@ export default function Hero() {
             initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            style={{ overflow: "hidden" }}
+            style={{ overflow: "visible" }}
           >
             <h1 style={{
-              fontSize: "clamp(3rem, 8vw, 7.5rem)",
+              fontSize: "clamp(3rem, 7vw, 6.5rem)",
               fontWeight: 900,
-              lineHeight: 0.9,
+              lineHeight: 1.1,
               letterSpacing: "-0.04em",
               color: "#e8eaf0",
               margin: 0,
@@ -160,12 +160,12 @@ export default function Hero() {
             initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.32, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            style={{ overflow: "hidden" }}
+            style={{ overflow: "visible" }}
           >
             <h1 style={{
-              fontSize: "clamp(3rem, 8vw, 7.5rem)",
+              fontSize: "clamp(3rem, 7vw, 6.5rem)",
               fontWeight: 900,
-              lineHeight: 0.9,
+              lineHeight: 1.1,
               letterSpacing: "-0.04em",
               margin: 0,
               background: "linear-gradient(135deg, #6366f1 0%, #22d3ee 100%)",

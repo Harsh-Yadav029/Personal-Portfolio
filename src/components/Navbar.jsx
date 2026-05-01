@@ -136,7 +136,7 @@ export default function Navbar() {
           alignItems: "center",
           justifyContent: "center",
           position: "relative",
-          overflow: "hidden",
+          padding: "2px 0",
           transition: "all 0.4s ease",
         }}>
           {/* Animated background accent */}
