@@ -125,7 +125,7 @@ function ContactCard() {
         />
 
         <form ref={formRef} onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem", position: "relative", zIndex: 1 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
+          <div className="contact-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               <label style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700 }}>Name</label>
               <input
@@ -361,7 +361,7 @@ export default function Contact() {
                 icon={<MailIcon />}
                 accent="#22d3ee"
               />
-              <div style={{ display: "flex", gap: "1rem" }}>
+              <div className="contact-actions" style={{ display: "flex", gap: "1rem" }}>
                 <a
                   href={`mailto:${personal.email}?subject=Hello Harsh! - Project Collaboration`}
                   style={{
@@ -470,6 +470,12 @@ export default function Contact() {
           }
           .contact-card-wrapper {
             padding: 1.5rem !important;
+          }
+          .contact-form-row {
+            grid-template-columns: 1fr !important;
+          }
+          .contact-actions {
+            flex-direction: column !important;
           }
         }
         @media (max-width: 500px) {

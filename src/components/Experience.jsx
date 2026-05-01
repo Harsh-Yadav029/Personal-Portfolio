@@ -108,42 +108,40 @@ function ExperienceCard({ exp, index, accent }) {
   return (
     <div
       ref={ref}
+      className="exp-grid"
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 60px 1fr",
         alignItems: "center",
         position: "relative",
         minHeight: 200,
-        marginBottom: index < experience.length - 1 ? "0" : "0",
       }}
     >
       {/* Left side content or spacer */}
-      <div style={{ position: "relative" }}>
+      <div className="exp-left" style={{ position: "relative" }}>
         {isLeft ? (
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
             style={{ paddingRight: "2rem" }}
           >
             <CardContent exp={exp} accent={accent} side="left" />
           </motion.div>
-        ) : (
-          <div />
-        )}
-        {isLeft && <BranchLine side="left" accent={accent} />}
+        ) : null}
+        {isLeft && <div className="branch-line-desktop"><BranchLine side="left" accent={accent} /></div>}
       </div>
 
       {/* Center node column */}
-      <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+      <div className="exp-center" style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
         <TreeNode accent={accent} index={index} />
       </div>
 
       {/* Right side content or spacer */}
-      <div style={{ position: "relative" }}>
+      <div className="exp-right" style={{ position: "relative" }}>
         {!isLeft ? (
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
             style={{ paddingLeft: "2rem" }}
@@ -151,9 +149,12 @@ function ExperienceCard({ exp, index, accent }) {
             <CardContent exp={exp} accent={accent} side="right" />
           </motion.div>
         ) : (
-          <div />
+          /* Mobile content placeholder */
+          <div className="exp-mobile-content" style={{ display: "none", paddingLeft: "1.5rem" }}>
+             <CardContent exp={exp} accent={accent} side="right" />
+          </div>
         )}
-        {!isLeft && <BranchLine side="right" accent={accent} />}
+        {!isLeft && <div className="branch-line-desktop"><BranchLine side="right" accent={accent} /></div>}
       </div>
     </div>
   );
@@ -311,9 +312,10 @@ function CardContent({ exp, accent, side }) {
 }
 
 /* ─── Animated Trunk ─── */
-function AnimatedTrunk({ totalHeight }) {
+function AnimatedTrunk() {
   return (
     <div
+      className="exp-trunk"
       style={{
         position: "absolute",
         left: "50%",
@@ -453,10 +455,32 @@ export default function Experience() {
           0%, 100% { box-shadow: 0 0 8px rgba(74,222,128,0.7); }
           50% { box-shadow: 0 0 16px rgba(74,222,128,0.15); }
         }
-        @media (max-width: 768px) {
-          .exp-tree-grid {
-            grid-template-columns: 24px 1fr !important;
+        @media (max-width: 850px) {
+          .exp-grid {
+            grid-template-columns: 40px 1fr !important;
+            gap: 1rem !important;
+            min-height: auto !important;
+            margin-bottom: 2.5rem;
           }
+          .exp-trunk {
+            left: 20px !important;
+          }
+          .exp-center {
+            justify-content: flex-start !important;
+          }
+          .exp-left {
+            display: none !important;
+          }
+          .exp-right {
+            padding-left: 0.5rem !important;
+          }
+          .exp-mobile-content {
+            display: block !important;
+          }
+          .branch-line-desktop {
+            display: none !important;
+          }
+          #experience { padding: 4rem 1.25rem !important; }
         }
       `}</style>
     </section>

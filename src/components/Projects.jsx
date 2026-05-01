@@ -242,7 +242,7 @@ function ProjectRow({ project, index }) {
           </p>
 
           {/* Metrics */}
-          <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap", borderTop: "1px solid rgba(255,255,255,0.04)", paddingTop: "0.9rem" }}>
+          <div className="proj-metrics" style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap", borderTop: "1px solid rgba(255,255,255,0.04)", paddingTop: "0.9rem" }}>
             {project.metrics.map((m) => (
               <div key={m.label} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <span
@@ -274,7 +274,7 @@ function ProjectRow({ project, index }) {
           </div>
 
           {/* Tech pills */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem" }}>
+          <div className="proj-tech" style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
             {project.tech.slice(0, 6).map((t) => (
               <span
                 key={t}
@@ -282,7 +282,7 @@ function ProjectRow({ project, index }) {
                   fontFamily: "'Inter', monospace",
                   fontSize: "0.6rem",
                   letterSpacing: "0.04em",
-                  padding: "0.18rem 0.6rem",
+                  padding: "0.22rem 0.65rem",
                   borderRadius: 4,
                   border: "1px solid rgba(255,255,255,0.06)",
                   background: "rgba(255,255,255,0.02)",
@@ -559,18 +559,41 @@ export default function Projects() {
             grid-template-columns: 1fr !important;
             gap: 2rem !important;
             direction: ltr !important;
-            padding: 2rem 0 !important;
+            padding: 2.5rem 0 !important;
+            text-align: center;
+          }
+          .proj-row > div:first-child > div {
+            align-items: center !important;
+            margin: 0 auto;
           }
           .proj-row .proj-mock {
             justify-content: center !important;
             transform: scale(0.85);
             margin: 1rem 0;
+            order: -1;
+          }
+          .proj-metrics {
+            justify-content: center !important;
+            gap: 2rem !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .proj-metrics {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            text-align: left;
+            width: fit-content;
+            margin: 0 auto;
           }
         }
         @media (max-width: 500px) {
           .proj-row .proj-mock {
-            transform: scale(0.65);
-            margin: -2rem 0;
+            transform: scale(0.6);
+            margin: -3rem 0;
+          }
+          .proj-metrics {
+            grid-template-columns: 1fr;
+            gap: 1.25rem !important;
           }
           #projects { padding: 4rem 1.25rem !important; }
         }
