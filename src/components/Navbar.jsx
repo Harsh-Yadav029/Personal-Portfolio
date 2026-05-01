@@ -234,6 +234,7 @@ export default function Navbar() {
         <a
           href="#contact"
           onClick={(e) => scrollToSection(e, "#contact", "Contact")}
+          className="nav-cta"
           style={{
             padding: "0.65rem 1.4rem",
             borderRadius: "100px",
@@ -266,12 +267,14 @@ export default function Navbar() {
         <button
           style={{
             display: "none",
-            background: "none",
-            border: "none",
-            padding: "0.5rem",
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            padding: "0.8rem",
+            borderRadius: "12px",
             cursor: "pointer",
             flexDirection: "column",
-            gap: "4px"
+            gap: "4px",
+            backdropFilter: "blur(10px)",
           }}
           className="mobile-toggle"
         >
@@ -281,6 +284,10 @@ export default function Navbar() {
       </div>
 
       <style>{`
+        @media (max-width: 1024px) {
+          header { padding: 1rem !important; }
+          .nav-cta { display: none !important; }
+        }
         @media (max-width: 900px) {
           nav { display: none !important; }
           .mobile-toggle { display: flex !important; }

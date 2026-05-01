@@ -93,6 +93,7 @@ function ContactCard() {
           scale: hovered ? 1.02 : 1,
         }}
         transition={{ type: "spring", stiffness: 150, damping: 20 }}
+        className="contact-card-wrapper"
         style={{
           background: "rgba(10,12,18,0.7)",
           backdropFilter: "blur(20px)",
@@ -463,10 +464,16 @@ export default function Contact() {
           50% { box-shadow: 0 0 20px rgba(34,211,238,0.1); }
         }
         @media (max-width: 900px) {
-          #contact > div > div:last-child {
+          #contact > div > div:nth-child(2) {
             grid-template-columns: 1fr !important;
             gap: 3rem !important;
           }
+          .contact-card-wrapper {
+            padding: 1.5rem !important;
+          }
+        }
+        @media (max-width: 500px) {
+          #contact { padding: 4rem 1.25rem !important; }
         }
       `}</style>
     </section>

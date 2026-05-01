@@ -75,7 +75,7 @@ export default function About() {
           />
         </motion.div>
 
-        <div style={{
+        <div className="about-content" style={{
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
@@ -145,7 +145,7 @@ export default function About() {
             </p>
 
             {/* Stats */}
-            <div style={{
+            <div className="about-stats" style={{
               display: "flex",
               gap: "2.75rem",
               flexWrap: "wrap",
@@ -248,6 +248,7 @@ export default function About() {
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
             style={{ flexShrink: 0, position: "relative" }}
+            className="about-image-container"
           >
             {/* Glow halo */}
             <div style={{
@@ -260,7 +261,7 @@ export default function About() {
             }} />
 
             {/* Blob with Image */}
-            <div style={{
+            <div className="about-blob" style={{
               width: 340,
               height: 380,
               borderRadius: "60% 40% 55% 45% / 45% 55% 40% 60%",
@@ -356,6 +357,12 @@ export default function About() {
               @keyframes statusPulse {
                 0%,100% { box-shadow: 0 0 8px rgba(74,222,128,0.7); }
                 50%     { box-shadow: 0 0 16px rgba(74,222,128,0.2); }
+              }
+              @media (max-width: 900px) {
+                .about-content { flex-direction: column-reverse !important; gap: 3rem !important; }
+                .about-image-container { align-self: center !important; }
+                .about-blob { width: 280px !important; height: 320px !important; }
+                .about-stats { gap: 1.5rem !important; justify-content: space-between !important; }
               }
             `}</style>
           </motion.div>

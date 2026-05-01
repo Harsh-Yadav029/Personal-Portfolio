@@ -557,12 +557,22 @@ export default function Projects() {
         @media (max-width: 900px) {
           .proj-row {
             grid-template-columns: 1fr !important;
-            gap: 3rem !important;
+            gap: 2rem !important;
             direction: ltr !important;
+            padding: 2rem 0 !important;
           }
           .proj-row .proj-mock {
             justify-content: center !important;
+            transform: scale(0.85);
+            margin: 1rem 0;
           }
+        }
+        @media (max-width: 500px) {
+          .proj-row .proj-mock {
+            transform: scale(0.65);
+            margin: -2rem 0;
+          }
+          #projects { padding: 4rem 1.25rem !important; }
         }
       `}</style>
     </section>
