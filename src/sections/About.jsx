@@ -207,7 +207,7 @@ export default function About() {
                 Contact Me →
               </a>
               <a
-                href="/resume.pdf"
+                href="/Resume-Harsh.pdf"
                 download
                 style={{
                   padding: "0.9rem 2.2rem",

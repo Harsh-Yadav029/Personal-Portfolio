@@ -1,6 +1,7 @@
 import { motion, useInView } from "framer-motion";
 import { useState, useRef } from "react";
 import { personal } from "../data/portfolioData";
+import emailjs from "@emailjs/browser";
 
 /* ─── Icon Components ─── */
 const SendIcon = () => (
@@ -16,11 +17,27 @@ const MailIcon = () => (
   </svg>
 );
 
+const Loader = () => (
+  <motion.div
+    animate={{ rotate: 360 }}
+    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+    style={{
+      width: 18,
+      height: 18,
+      border: "2px solid rgba(0,0,0,0.1)",
+      borderTop: "2px solid #000",
+      borderRadius: "50%",
+    }}
+  />
+);
+
 /* ─── 3D Contact Card ─── */
 function ContactCard() {
   const [hovered, setHovered] = useState(false);
   const cardRef = useRef(null);
+  const formRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [status, setStatus] = useState("idle"); // idle, sending, success, error
 
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
@@ -28,6 +45,29 @@ function ContactCard() {
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
     setMousePos({ x, y });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (status === "sending") return;
+
+    setStatus("sending");
+
+    try {
+      await emailjs.sendForm(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+      setStatus("success");
+      formRef.current.reset();
+      setTimeout(() => setStatus("idle"), 5000);
+    } catch (error) {
+      console.error("EmailJS Error:", error);
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 5000);
+    }
   };
 
   return (
@@ -57,13 +97,14 @@ function ContactCard() {
           background: "rgba(10,12,18,0.7)",
           backdropFilter: "blur(20px)",
           borderRadius: 24,
-          border: "1px solid rgba(255,255,255,0.08)",
+          border: status === "success" ? "1px solid rgba(74,222,128,0.3)" : status === "error" ? "1px solid rgba(239,68,68,0.3)" : "1px solid rgba(255,255,255,0.08)",
           padding: "2.5rem",
-          boxShadow: hovered 
+          boxShadow: hovered
             ? "0 40px 100px rgba(0,0,0,0.6), 0 0 40px rgba(34,211,238,0.05)"
             : "0 20px 50px rgba(0,0,0,0.4)",
           position: "relative",
           overflow: "hidden",
+          transition: "border-color 0.3s",
         }}
       >
         {/* Glow effect */}
@@ -71,26 +112,32 @@ function ContactCard() {
           style={{
             position: "absolute",
             inset: 0,
-            background: `radial-gradient(circle at ${50 + mousePos.x * 100}% ${50 + mousePos.y * 100}%, rgba(34,211,238,0.1), transparent 50%)`,
+            background: status === "success"
+              ? `radial-gradient(circle at ${50 + mousePos.x * 100}% ${50 + mousePos.y * 100}%, rgba(74,222,128,0.1), transparent 50%)`
+              : status === "error"
+                ? `radial-gradient(circle at ${50 + mousePos.x * 100}% ${50 + mousePos.y * 100}%, rgba(239,68,68,0.1), transparent 50%)`
+                : `radial-gradient(circle at ${50 + mousePos.x * 100}% ${50 + mousePos.y * 100}%, rgba(34,211,238,0.1), transparent 50%)`,
             opacity: hovered ? 1 : 0,
             transition: "opacity 0.4s",
             pointerEvents: "none",
           }}
         />
 
-        <form style={{ display: "flex", flexDirection: "column", gap: "1.5rem", position: "relative", zIndex: 1 }}>
+        <form ref={formRef} onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem", position: "relative", zIndex: 1 }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               <label style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700 }}>Name</label>
-              <input 
-                type="text" 
-                placeholder="John Doe"
-                style={{ 
-                  background: "rgba(255,255,255,0.03)", 
-                  border: "1px solid rgba(255,255,255,0.06)", 
-                  borderRadius: 12, 
-                  padding: "0.8rem 1rem", 
-                  color: "#fff", 
+              <input
+                name="from_name"
+                type="text"
+                placeholder="Enter Your Name..."
+                required
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: 12,
+                  padding: "0.8rem 1rem",
+                  color: "#fff",
                   fontSize: "0.9rem",
                   outline: "none",
                   transition: "border-color 0.3s, background 0.3s",
@@ -101,15 +148,17 @@ function ContactCard() {
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               <label style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700 }}>Email</label>
-              <input 
-                type="email" 
-                placeholder="john@example.com"
-                style={{ 
-                  background: "rgba(255,255,255,0.03)", 
-                  border: "1px solid rgba(255,255,255,0.06)", 
-                  borderRadius: 12, 
-                  padding: "0.8rem 1rem", 
-                  color: "#fff", 
+              <input
+                name="from_email"
+                type="email"
+                placeholder="name@example.com"
+                required
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: 12,
+                  padding: "0.8rem 1rem",
+                  color: "#fff",
                   fontSize: "0.9rem",
                   outline: "none",
                   transition: "border-color 0.3s, background 0.3s",
@@ -121,15 +170,17 @@ function ContactCard() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
             <label style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700 }}>Message</label>
-            <textarea 
+            <textarea
+              name="message"
               placeholder="How can I help you?"
               rows={4}
-              style={{ 
-                background: "rgba(255,255,255,0.03)", 
-                border: "1px solid rgba(255,255,255,0.06)", 
-                borderRadius: 12, 
-                padding: "0.8rem 1rem", 
-                color: "#fff", 
+              required
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 12,
+                padding: "0.8rem 1rem",
+                color: "#fff",
                 fontSize: "0.9rem",
                 outline: "none",
                 transition: "border-color 0.3s, background 0.3s",
@@ -141,10 +192,15 @@ function ContactCard() {
           </div>
           <button
             type="submit"
+            disabled={status === "sending" || status === "success"}
             style={{
               marginTop: "0.5rem",
-              background: "linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)",
-              color: "#000",
+              background: status === "success"
+                ? "#4ade80"
+                : status === "error"
+                  ? "#ef4444"
+                  : "linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)",
+              color: status === "success" || status === "error" ? "#fff" : "#000",
               border: "none",
               borderRadius: 12,
               padding: "1rem",
@@ -156,14 +212,35 @@ function ContactCard() {
               alignItems: "center",
               justifyContent: "center",
               gap: "0.75rem",
-              cursor: "pointer",
-              transition: "transform 0.2s, box-shadow 0.2s, opacity 0.2s",
+              cursor: status === "sending" ? "not-allowed" : "pointer",
+              transition: "all 0.3s ease",
+              opacity: status === "sending" ? 0.7 : 1,
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 10px 20px rgba(34,211,238,0.2)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+            onMouseEnter={(e) => {
+              if (status === "idle") {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 10px 20px rgba(34,211,238,0.2)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "none";
+              e.currentTarget.style.boxShadow = "none";
+            }}
           >
-            Send Message
-            <SendIcon />
+            {status === "idle" && (
+              <>
+                Send Message
+                <SendIcon />
+              </>
+            )}
+            {status === "sending" && (
+              <>
+                Sending...
+                <Loader />
+              </>
+            )}
+            {status === "success" && "Message Sent!"}
+            {status === "error" && "Error Sending"}
           </button>
         </form>
       </motion.div>
@@ -178,7 +255,17 @@ function InfoRow({ label, value, icon, accent }) {
       onMouseEnter={(e) => { e.currentTarget.style.borderColor = accent + "33"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
       onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)"; e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
     >
-      <div style={{ width: 40, height: 40, borderRadius: 10, background: accent + "15", border: `1px solid ${accent}33`, display: "flex", alignItems: "center", justifyCenter: "center", color: accent, display: "flex", justifyContent: "center" }}>
+      <div style={{
+        width: 40,
+        height: 40,
+        borderRadius: 10,
+        background: accent + "15",
+        border: `1px solid ${accent}33`,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: accent
+      }}>
         {icon}
       </div>
       <div>
@@ -199,7 +286,7 @@ export default function Contact() {
       <div style={{ position: "absolute", bottom: "10%", right: "-5%", width: "40vw", height: "40vw", background: "radial-gradient(ellipse, rgba(129,140,248,0.03) 0%, transparent 65%)", pointerEvents: "none" }} />
 
       <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1 }}>
-        
+
         {/* ── Section Header ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -253,7 +340,7 @@ export default function Contact() {
         </motion.div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "center" }}>
-          
+
           {/* Left Column: Info */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -267,27 +354,27 @@ export default function Contact() {
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              <InfoRow 
-                label="Email Address" 
-                value={personal.email} 
-                icon={<MailIcon />} 
+              <InfoRow
+                label="Email Address"
+                value={personal.email}
+                icon={<MailIcon />}
                 accent="#22d3ee"
               />
               <div style={{ display: "flex", gap: "1rem" }}>
-                <a 
+                <a
                   href={`mailto:${personal.email}`}
-                  style={{ 
-                    flex: 1, 
-                    padding: "1rem", 
-                    borderRadius: 12, 
-                    background: "rgba(255,255,255,0.03)", 
-                    border: "1px solid rgba(255,255,255,0.06)", 
-                    color: "#fff", 
-                    textDecoration: "none", 
-                    fontSize: "0.7rem", 
-                    fontWeight: 700, 
-                    textTransform: "uppercase", 
-                    letterSpacing: "0.1em", 
+                  style={{
+                    flex: 1,
+                    padding: "1rem",
+                    borderRadius: 12,
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    color: "#fff",
+                    textDecoration: "none",
+                    fontSize: "0.7rem",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
                     textAlign: "center",
                     transition: "background 0.3s, border-color 0.3s"
                   }}
@@ -296,21 +383,21 @@ export default function Contact() {
                 >
                   Send Direct Mail
                 </a>
-                <a 
-                  href="/resume.pdf"
+                <a
+                  href="/Resume-Harsh.pdf"
                   target="_blank"
-                  style={{ 
-                    flex: 1, 
-                    padding: "1rem", 
-                    borderRadius: 12, 
-                    background: "rgba(255,255,255,0.03)", 
-                    border: "1px solid rgba(255,255,255,0.06)", 
-                    color: "#fff", 
-                    textDecoration: "none", 
-                    fontSize: "0.7rem", 
-                    fontWeight: 700, 
-                    textTransform: "uppercase", 
-                    letterSpacing: "0.1em", 
+                  style={{
+                    flex: 1,
+                    padding: "1rem",
+                    borderRadius: 12,
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    color: "#fff",
+                    textDecoration: "none",
+                    fontSize: "0.7rem",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
                     textAlign: "center",
                     transition: "background 0.3s, border-color 0.3s"
                   }}
@@ -330,16 +417,16 @@ export default function Contact() {
                 { name: "Instagram", url: personal.links.instagram },
                 { name: "LeetCode", url: personal.links.leetcode }
               ].map(social => (
-                <a 
-                  key={social.name} 
+                <a
+                  key={social.name}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ 
-                    fontSize: "0.58rem", 
-                    color: "rgba(255,255,255,0.25)", 
-                    textTransform: "uppercase", 
-                    letterSpacing: "0.12em", 
+                  style={{
+                    fontSize: "0.58rem",
+                    color: "rgba(255,255,255,0.25)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.12em",
                     fontWeight: 600,
                     padding: "0.4rem 0.8rem",
                     borderRadius: 8,
