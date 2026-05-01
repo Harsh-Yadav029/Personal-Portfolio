@@ -1,183 +1,387 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { motion, useInView } from "framer-motion";
+import { useState, useRef } from "react";
 import { personal } from "../data/portfolioData";
-import { fadeUp, viewportSettings } from "../animations/variants";
 
-const SocialIcons = {
-  github: (
-    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.042-1.416-4.042-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-  ),
-  linkedin: (
-    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-  ),
-  leetcode: (
-    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M13.483 0a1.374 1.374 0 00-.961.414l-11.71 11.593a1.384 1.384 0 000 1.981l1.178 1.166a1.391 1.391 0 001.983 0l11.593-11.712a1.384 1.384 0 000-1.981L14.387.414A1.374 1.374 0 0013.483 0zM4.574 13.474a1.384 1.384 0 000 1.981l1.178 1.166a1.391 1.391 0 001.983 0l1.166-1.178a1.384 1.384 0 000-1.981l-1.178-1.166a1.391 1.391 0 00-1.983 0l-1.166 1.178zM22.29 13.474a1.384 1.384 0 000 1.981l-1.178 1.166a1.391 1.391 0 00-1.983 0l-1.166-1.178a1.384 1.384 0 000-1.981l1.178-1.166a1.391 1.391 0 001.983 0l1.166 1.178zM13.483 24a1.374 1.374 0 00.961-.414l11.71-11.593a1.384 1.384 0 000-1.981l-1.178-1.166a1.391 1.391 0 00-1.983 0l-11.593 11.712a1.384 1.384 0 000 1.981l1.178 1.166a1.374 1.374 0 00.904.414z"/></svg>
-  )
-};
+/* ─── Icon Components ─── */
+const SendIcon = () => (
+  <svg viewBox="0 0 24 24" style={{ width: 18, height: 18, fill: "none", stroke: "currentColor", strokeWidth: 2 }}>
+    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
 
-export default function Contact() {
-  const [copied, setCopied] = useState(false);
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+const MailIcon = () => (
+  <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, fill: "none", stroke: "currentColor", strokeWidth: 2 }}>
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+    <polyline points="22,6 12,13 2,6" />
+  </svg>
+);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(personal.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+/* ─── 3D Contact Card ─── */
+function ContactCard() {
+  const [hovered, setHovered] = useState(false);
+  const cardRef = useRef(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setMousePos({ x, y });
   };
 
   return (
-    <section id="contact" className="py-16 px-8 overflow-hidden border-t border-white/5">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
-          
-          {/* Left Side: Professional Summary & Status */}
-          <div className="lg:col-span-5 space-y-16">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={viewportSettings}
-              variants={fadeUp}
-              className="space-y-10"
-            >
-              <div className="space-y-6">
-                <span className="text-[11px] text-cyan-400 uppercase tracking-[0.4em] font-bold block">Contact_Module</span>
-                <h2 className="text-6xl md:text-8xl font-black text-white leading-[0.8] tracking-tighter uppercase">
-                  ESTABLISH <br /> 
-                  <span className="text-white/10">SYNC.</span>
-                </h2>
-              </div>
-              
-              <p className="text-lg md:text-xl text-white/50 font-medium leading-relaxed max-w-md">
-                I'm currently looking for new opportunities and collaborations. If you have a question or just want to say hi, I'll try my best to get back to you!
-              </p>
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => {
+        setHovered(false);
+        setMousePos({ x: 0, y: 0 });
+      }}
+      style={{
+        perspective: 1000,
+        width: "100%",
+        maxWidth: 600,
+        margin: "0 auto",
+      }}
+    >
+      <motion.div
+        animate={{
+          rotateY: mousePos.x * 15,
+          rotateX: -mousePos.y * 15,
+          scale: hovered ? 1.02 : 1,
+        }}
+        transition={{ type: "spring", stiffness: 150, damping: 20 }}
+        style={{
+          background: "rgba(10,12,18,0.7)",
+          backdropFilter: "blur(20px)",
+          borderRadius: 24,
+          border: "1px solid rgba(255,255,255,0.08)",
+          padding: "2.5rem",
+          boxShadow: hovered 
+            ? "0 40px 100px rgba(0,0,0,0.6), 0 0 40px rgba(34,211,238,0.05)"
+            : "0 20px 50px rgba(0,0,0,0.4)",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Glow effect */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: `radial-gradient(circle at ${50 + mousePos.x * 100}% ${50 + mousePos.y * 100}%, rgba(34,211,238,0.1), transparent 50%)`,
+            opacity: hovered ? 1 : 0,
+            transition: "opacity 0.4s",
+            pointerEvents: "none",
+          }}
+        />
 
-              <div className="flex flex-wrap gap-4 pt-4">
-                 <a 
-                   href={`mailto:${personal.email}`}
-                   className="px-8 py-3 rounded-full bg-white text-black text-[10px] font-bold uppercase tracking-widest hover:bg-cyan-400 transition-all"
-                 >
-                   Email Me
-                 </a>
-                 <a 
-                   href="/resume.pdf"
-                   className="px-8 py-3 rounded-full border border-white/10 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-white/5 transition-all"
-                 >
-                   View Resume
-                 </a>
-              </div>
-            </motion.div>
-
-            {/* System Status Panel */}
-            <motion.div 
-              initial="hidden"
-              whileInView="visible"
-              viewport={viewportSettings}
-              variants={fadeUp}
-              className="p-8 rounded-3xl border border-white/5 bg-white/[0.02] space-y-6"
-            >
-               <div className="text-[10px] text-white/20 uppercase tracking-[0.3em] font-bold">System_Status</div>
-               <div className="space-y-6">
-                  {[
-                    { label: "Communication Channel", val: "ACTIVE", active: true },
-                    { label: "Response Time", val: "< 24 HOURS", active: false },
-                    { label: "Availability", val: "OPEN TO OPPORTUNITIES", active: true },
-                  ].map(stat => (
-                    <div key={stat.label} className="flex justify-between items-center group">
-                      <span className="text-[10px] text-white/40 uppercase tracking-widest">{stat.label}</span>
-                      <div className="flex items-center gap-3">
-                        {stat.active && <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />}
-                        <span className="text-[10px] font-bold text-white group-hover:text-cyan-400 transition-colors uppercase tracking-widest">{stat.val}</span>
-                      </div>
-                    </div>
-                  ))}
-               </div>
-            </motion.div>
+        <form style={{ display: "flex", flexDirection: "column", gap: "1.5rem", position: "relative", zIndex: 1 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              <label style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700 }}>Name</label>
+              <input 
+                type="text" 
+                placeholder="John Doe"
+                style={{ 
+                  background: "rgba(255,255,255,0.03)", 
+                  border: "1px solid rgba(255,255,255,0.06)", 
+                  borderRadius: 12, 
+                  padding: "0.8rem 1rem", 
+                  color: "#fff", 
+                  fontSize: "0.9rem",
+                  outline: "none",
+                  transition: "border-color 0.3s, background 0.3s",
+                }}
+                onFocus={(e) => { e.target.style.borderColor = "#22d3ee55"; e.target.style.background = "rgba(255,255,255,0.05)"; }}
+                onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.06)"; e.target.style.background = "rgba(255,255,255,0.03)"; }}
+              />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              <label style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700 }}>Email</label>
+              <input 
+                type="email" 
+                placeholder="john@example.com"
+                style={{ 
+                  background: "rgba(255,255,255,0.03)", 
+                  border: "1px solid rgba(255,255,255,0.06)", 
+                  borderRadius: 12, 
+                  padding: "0.8rem 1rem", 
+                  color: "#fff", 
+                  fontSize: "0.9rem",
+                  outline: "none",
+                  transition: "border-color 0.3s, background 0.3s",
+                }}
+                onFocus={(e) => { e.target.style.borderColor = "#22d3ee55"; e.target.style.background = "rgba(255,255,255,0.05)"; }}
+                onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.06)"; e.target.style.background = "rgba(255,255,255,0.03)"; }}
+              />
+            </div>
           </div>
-
-          {/* Right Side: Interactive Communication Interface */}
-          <div className="lg:col-span-7">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={viewportSettings}
-              variants={fadeUp}
-              className="rounded-[3rem] border border-white/10 bg-[#05070a] p-8 md:p-12 shadow-2xl relative overflow-hidden group"
-            >
-               {/* Background Glow */}
-               <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-400/5 blur-[100px] rounded-full pointer-events-none" />
-
-               {/* Click-to-Copy Header */}
-               <div className="relative z-10 mb-12 p-6 rounded-2xl border border-white/5 bg-white/[0.02] flex flex-col md:flex-row justify-between items-center gap-6 group/copy cursor-pointer" onClick={handleCopy}>
-                  <div className="space-y-1 text-center md:text-left">
-                    <div className="text-[9px] text-white/20 uppercase tracking-[0.4em] font-bold">Direct_Link</div>
-                    <div className="text-xl md:text-2xl font-bold text-white tracking-tight group-hover/copy:text-cyan-400 transition-colors">{personal.email}</div>
-                  </div>
-                  <button className="px-6 py-2 rounded-xl bg-white/[0.05] border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest hover:bg-cyan-400 hover:text-black transition-all">
-                    {copied ? "Copied!" : "Copy Email"}
-                  </button>
-               </div>
-
-               {/* Interactive Form */}
-               <form className="relative z-10 space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-3">
-                      <label className="text-[10px] text-white/20 uppercase tracking-[0.3em] font-bold ml-4">Full_Name</label>
-                      <input 
-                        type="text" 
-                        placeholder="John Doe"
-                        className="w-full px-6 py-4 rounded-2xl bg-white/[0.03] border border-white/5 text-white focus:border-cyan-400/50 focus:bg-cyan-400/5 outline-none transition-all placeholder:text-white/10 text-sm"
-                      />
-                    </div>
-                    <div className="space-y-3">
-                      <label className="text-[10px] text-white/20 uppercase tracking-[0.3em] font-bold ml-4">Email_Handle</label>
-                      <input 
-                        type="email" 
-                        placeholder="john@example.com"
-                        className="w-full px-6 py-4 rounded-2xl bg-white/[0.03] border border-white/5 text-white focus:border-cyan-400/50 focus:bg-cyan-400/5 outline-none transition-all placeholder:text-white/10 text-sm"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <label className="text-[10px] text-white/20 uppercase tracking-[0.3em] font-bold ml-4">Message_Buffer</label>
-                    <textarea 
-                      rows="4"
-                      placeholder="Share your architectural requirements or project sync details..."
-                      className="w-full px-6 py-6 rounded-3xl bg-white/[0.03] border border-white/5 text-white focus:border-cyan-400/50 focus:bg-cyan-400/5 outline-none transition-all placeholder:text-white/10 text-sm resize-none"
-                    />
-                  </div>
-
-                  <button 
-                    type="submit"
-                    className="w-full py-5 rounded-full bg-cyan-400 text-black font-black text-sm uppercase tracking-[0.2em] hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.3)] transition-all active:scale-95"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Initiate Connection
-                  </button>
-               </form>
-
-               {/* Social Footer */}
-               <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-12 pt-8 border-t border-white/5">
-                  <div className="text-[9px] text-white/20 font-mono tracking-widest">ESTABLISHING_ENCRYPTED_SYNC...</div>
-                  <div className="flex gap-6">
-                     {Object.entries(personal.links).map(([key, url]) => (
-                       <a 
-                         key={key} 
-                         href={url} 
-                         target="_blank" 
-                         rel="noopener noreferrer"
-                         className="w-10 h-10 rounded-full border border-white/5 bg-white/[0.01] flex items-center justify-center text-white/30 hover:text-cyan-400 hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all"
-                         title={key}
-                       >
-                         {SocialIcons[key] || key.substring(0, 2)}
-                       </a>
-                     ))}
-                  </div>
-               </div>
-            </motion.div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            <label style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700 }}>Message</label>
+            <textarea 
+              placeholder="How can I help you?"
+              rows={4}
+              style={{ 
+                background: "rgba(255,255,255,0.03)", 
+                border: "1px solid rgba(255,255,255,0.06)", 
+                borderRadius: 12, 
+                padding: "0.8rem 1rem", 
+                color: "#fff", 
+                fontSize: "0.9rem",
+                outline: "none",
+                transition: "border-color 0.3s, background 0.3s",
+                resize: "none",
+              }}
+              onFocus={(e) => { e.target.style.borderColor = "#22d3ee55"; e.target.style.background = "rgba(255,255,255,0.05)"; }}
+              onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.06)"; e.target.style.background = "rgba(255,255,255,0.03)"; }}
+            />
           </div>
+          <button
+            type="submit"
+            style={{
+              marginTop: "0.5rem",
+              background: "linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)",
+              color: "#000",
+              border: "none",
+              borderRadius: 12,
+              padding: "1rem",
+              fontSize: "0.75rem",
+              fontWeight: 800,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.75rem",
+              cursor: "pointer",
+              transition: "transform 0.2s, box-shadow 0.2s, opacity 0.2s",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 10px 20px rgba(34,211,238,0.2)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+          >
+            Send Message
+            <SendIcon />
+          </button>
+        </form>
+      </motion.div>
+    </div>
+  );
+}
 
-        </div>
+/* ─── Info Row ─── */
+function InfoRow({ label, value, icon, accent }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "1.25rem", padding: "1.25rem", borderRadius: 16, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", transition: "border-color 0.3s, background 0.3s" }}
+      onMouseEnter={(e) => { e.currentTarget.style.borderColor = accent + "33"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)"; e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
+    >
+      <div style={{ width: 40, height: 40, borderRadius: 10, background: accent + "15", border: `1px solid ${accent}33`, display: "flex", alignItems: "center", justifyCenter: "center", color: accent, display: "flex", justifyContent: "center" }}>
+        {icon}
       </div>
+      <div>
+        <div style={{ fontSize: "0.55rem", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, marginBottom: "0.2rem" }}>{label}</div>
+        <div style={{ fontSize: "0.95rem", color: "#e8eaf0", fontWeight: 600 }}>{value}</div>
+      </div>
+    </div>
+  );
+}
+
+export default function Contact() {
+  const sectionRef = useRef(null);
+
+  return (
+    <section id="contact" ref={sectionRef} style={{ padding: "5rem 2rem", position: "relative", overflow: "hidden" }}>
+      {/* Ambient glows */}
+      <div style={{ position: "absolute", top: "10%", left: "-10%", width: "50vw", height: "50vw", background: "radial-gradient(ellipse, rgba(34,211,238,0.03) 0%, transparent 65%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: "10%", right: "-5%", width: "40vw", height: "40vw", background: "radial-gradient(ellipse, rgba(129,140,248,0.03) 0%, transparent 65%)", pointerEvents: "none" }} />
+
+      <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        
+        {/* ── Section Header ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          style={{ marginBottom: "4rem" }}
+        >
+          <h2
+            style={{
+              margin: 0,
+              lineHeight: 0.88,
+              letterSpacing: "-0.05em",
+              display: "flex",
+              alignItems: "baseline",
+              gap: "0.6rem",
+              flexWrap: "wrap",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "clamp(2.4rem, 5.5vw, 4.8rem)",
+                fontWeight: 900,
+                color: "#e8eaf0",
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+              }}
+            >
+              Get in
+            </span>
+            <span
+              style={{
+                fontSize: "clamp(2.4rem, 5.5vw, 4.8rem)",
+                fontWeight: 800,
+                fontStyle: "italic",
+                color: "transparent",
+                WebkitTextStroke: "1px rgba(232,234,240,0.2)",
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+              }}
+            >
+              Touch.
+            </span>
+          </h2>
+          {/* Divider */}
+          <div
+            style={{
+              marginTop: "1.5rem",
+              height: 1,
+              background: "linear-gradient(to right, rgba(34,211,238,0.35), rgba(129,140,248,0.15), transparent)",
+            }}
+          />
+        </motion.div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "center" }}>
+          
+          {/* Left Column: Info */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+            style={{ display: "flex", flexDirection: "column", gap: "2rem" }}
+          >
+            <p style={{ fontSize: "1.1rem", lineHeight: 1.6, color: "rgba(232,234,240,0.45)", maxWidth: 440 }}>
+              Currently open for new opportunities and creative collaborations. Let's build something exceptional together.
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <InfoRow 
+                label="Email Address" 
+                value={personal.email} 
+                icon={<MailIcon />} 
+                accent="#22d3ee"
+              />
+              <div style={{ display: "flex", gap: "1rem" }}>
+                <a 
+                  href={`mailto:${personal.email}`}
+                  style={{ 
+                    flex: 1, 
+                    padding: "1rem", 
+                    borderRadius: 12, 
+                    background: "rgba(255,255,255,0.03)", 
+                    border: "1px solid rgba(255,255,255,0.06)", 
+                    color: "#fff", 
+                    textDecoration: "none", 
+                    fontSize: "0.7rem", 
+                    fontWeight: 700, 
+                    textTransform: "uppercase", 
+                    letterSpacing: "0.1em", 
+                    textAlign: "center",
+                    transition: "background 0.3s, border-color 0.3s"
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(34,211,238,0.05)"; e.currentTarget.style.borderColor = "#22d3ee33"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; }}
+                >
+                  Send Direct Mail
+                </a>
+                <a 
+                  href="/resume.pdf"
+                  target="_blank"
+                  style={{ 
+                    flex: 1, 
+                    padding: "1rem", 
+                    borderRadius: 12, 
+                    background: "rgba(255,255,255,0.03)", 
+                    border: "1px solid rgba(255,255,255,0.06)", 
+                    color: "#fff", 
+                    textDecoration: "none", 
+                    fontSize: "0.7rem", 
+                    fontWeight: 700, 
+                    textTransform: "uppercase", 
+                    letterSpacing: "0.1em", 
+                    textAlign: "center",
+                    transition: "background 0.3s, border-color 0.3s"
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(129,140,248,0.05)"; e.currentTarget.style.borderColor = "#818cf833"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; }}
+                >
+                  Download CV
+                </a>
+              </div>
+            </div>
+
+            {/* Social Links */}
+            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", paddingTop: "1rem" }}>
+              {[
+                { name: "GitHub", url: personal.links.github },
+                { name: "LinkedIn", url: personal.links.linkedin },
+                { name: "Instagram", url: personal.links.instagram },
+                { name: "LeetCode", url: personal.links.leetcode }
+              ].map(social => (
+                <a 
+                  key={social.name} 
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ 
+                    fontSize: "0.58rem", 
+                    color: "rgba(255,255,255,0.25)", 
+                    textTransform: "uppercase", 
+                    letterSpacing: "0.12em", 
+                    fontWeight: 600,
+                    padding: "0.4rem 0.8rem",
+                    borderRadius: 8,
+                    border: "1px solid rgba(255,255,255,0.04)",
+                    background: "rgba(255,255,255,0.01)",
+                    textDecoration: "none",
+                    transition: "all 0.3s"
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.background = "rgba(255,255,255,0.05)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.25)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)"; e.currentTarget.style.background = "rgba(255,255,255,0.01)"; }}
+                >
+                  {social.name}
+                </a>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Right Column: 3D Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
+          >
+            <ContactCard />
+          </motion.div>
+        </div>
+
+      </div>
+
+      <style>{`
+        @keyframes contactPulse {
+          0%, 100% { box-shadow: 0 0 10px rgba(34,211,238,0.3); }
+          50% { box-shadow: 0 0 20px rgba(34,211,238,0.1); }
+        }
+        @media (max-width: 900px) {
+          #contact > div > div:last-child {
+            grid-template-columns: 1fr !important;
+            gap: 3rem !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

@@ -12,6 +12,7 @@ export const personal = {
     github: "https://github.com/harshyadav2027",
     linkedin: "https://linkedin.com",
     leetcode: "https://leetcode.com",
+    instagram: "https://instagram.com/harsh_yadav029",
   },
 };
 
@@ -120,7 +121,7 @@ export const experience = [
   {
     role: "Core Team Lead — Administrator & Graphic Lead",
     company: "CPBYTE KIET",
-    period: "2024 — Present",
+    period: " 2024 ",
     type: "Leadership",
     bullets: [
       "Organised coding contests and managed club operations for technical events attended by 200+ students.",
@@ -130,7 +131,7 @@ export const experience = [
   {
     role: "Web Development Lead",
     company: "DevUp KIET",
-    period: "2024 — Present",
+    period: " 2024 ",
     type: "Leadership",
     bullets: [
       "Led a team of 5 developers, conducted weekly workshops on React and Node.js.",

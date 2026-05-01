@@ -7,7 +7,7 @@ export default function About() {
     <section
       id="about"
       style={{
-        padding: "7rem 2rem",
+        padding: "6rem 2rem",
         position: "relative",
         overflow: "hidden",
       }}
@@ -20,6 +20,61 @@ export default function About() {
       }} />
 
       <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+        {/* ── Section Header ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          style={{ marginBottom: "3rem" }}
+        >
+          <div>
+
+            <h2
+              style={{
+                margin: 0,
+                lineHeight: 0.88,
+                letterSpacing: "-0.05em",
+                display: "flex",
+                alignItems: "baseline",
+                gap: "0.6rem",
+                flexWrap: "wrap",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "clamp(2.4rem, 5.5vw, 4.8rem)",
+                  fontWeight: 900,
+                  color: "#e8eaf0",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                }}
+              >
+                About
+              </span>
+              <span
+                style={{
+                  fontSize: "clamp(2.4rem, 5.5vw, 4.8rem)",
+                  fontWeight: 800,
+                  fontStyle: "italic",
+                  color: "transparent",
+                  WebkitTextStroke: "1px rgba(232,234,240,0.2)",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                }}
+              >
+                Me.
+              </span>
+            </h2>
+          </div>
+          {/* Divider */}
+          <div
+            style={{
+              marginTop: "1.5rem",
+              height: 1,
+              background: "linear-gradient(to right, rgba(129,140,248,0.35), rgba(34,211,238,0.15), transparent)",
+            }}
+          />
+        </motion.div>
+
         <div style={{
           display: "flex",
           flexDirection: "row",
@@ -30,32 +85,19 @@ export default function About() {
 
           {/* LEFT: Text */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            style={{ 
-              flex: 1, 
-              minWidth: 300, 
-              display: "flex", 
-              flexDirection: "column", 
-              gap: "1.25rem", // Tightened from 1.75rem
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+            style={{
+              flex: 1,
+              minWidth: 300,
+              display: "flex",
+              flexDirection: "column",
+              gap: "1.25rem",
               textAlign: "left"
             }}
           >
-            {/* Section label */}
-            <p style={{
-              fontFamily: "monospace",
-              fontSize: "0.75rem", // Refined from 1rem
-              color: "#22d3ee",
-              letterSpacing: "0.4em",
-              textTransform: "uppercase",
-              fontWeight: 700,
-              margin: 0,
-              opacity: 0.8
-            }}>
-              // About Me
-            </p>
 
             {/* Greeting headline */}
             <h2 style={{

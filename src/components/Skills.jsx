@@ -95,23 +95,72 @@ function MarqueeRow({ skills, direction = "left", speed = 40 }) {
 
 export default function Skills() {
   return (
-    <section id="stack" className="py-16 relative overflow-hidden">
+    <section id="skills" className="py-16 relative overflow-hidden">
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-8 text-center mb-14">
+      <div className="max-w-7xl mx-auto px-8 mb-10">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={viewportSettings}
           variants={fadeUp}
-          className="space-y-4"
         >
-          <span className="text-[10px] text-indigo-400 uppercase tracking-[0.5em] font-bold block font-mono">Arsenal</span>
-          <h2 className="text-5xl md:text-8xl font-black text-white leading-none tracking-tighter">
-            My <span className="text-white/10">Skills</span>
+          <span
+            style={{
+              fontFamily: "'Inter', monospace",
+              fontSize: "0.6rem",
+              letterSpacing: "0.5em",
+              textTransform: "uppercase",
+              color: "#818cf8",
+              fontWeight: 600,
+              display: "block",
+              marginBottom: "0.75rem",
+              opacity: 0.85,
+            }}
+          >
+            Arsenal
+          </span>
+          <h2
+            style={{
+              margin: 0,
+              lineHeight: 0.88,
+              letterSpacing: "-0.05em",
+              display: "flex",
+              alignItems: "baseline",
+              gap: "0.5rem",
+              flexWrap: "wrap",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "clamp(2.4rem, 5.5vw, 4.8rem)",
+                fontWeight: 900,
+                color: "#e8eaf0",
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+              }}
+            >
+              My
+            </span>
+            <span
+              style={{
+                fontSize: "clamp(2.4rem, 5.5vw, 4.8rem)",
+                fontWeight: 800,
+                fontStyle: "italic",
+                color: "transparent",
+                WebkitTextStroke: "1px rgba(232,234,240,0.2)",
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+              }}
+            >
+              Skills.
+            </span>
           </h2>
-          <p className="font-mono text-sm text-white/30 tracking-widest uppercase mt-3">
-            Modern Applications · Modern Technologies
-          </p>
+          {/* Divider */}
+          <div
+            style={{
+              marginTop: "1.5rem",
+              height: 1,
+              background: "linear-gradient(to right, rgba(129,140,248,0.35), rgba(34,211,238,0.15), transparent)",
+            }}
+          />
         </motion.div>
       </div>
 
