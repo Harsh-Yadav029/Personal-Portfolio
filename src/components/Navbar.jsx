@@ -12,6 +12,7 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("Home");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isScrolling = useRef(false);
 
   useEffect(() => {
@@ -58,8 +59,11 @@ export default function Navbar() {
     };
   }, []);
 
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
+
   const scrollToSection = (e, href, label) => {
     e.preventDefault();
+    setMobileMenuOpen(false); // Close menu on click
     const element = document.querySelector(href);
     if (element) {
       isScrolling.current = true;
@@ -97,11 +101,14 @@ export default function Navbar() {
         left: 0,
         right: 0,
         zIndex: 1000,
-        padding: "1.5rem 2rem",
+        padding: scrolled ? "0.8rem 2rem" : "1.5rem 2rem",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+        background: scrolled ? "rgba(7, 8, 12, 0.4)" : "transparent",
+        backdropFilter: scrolled ? "blur(20px)" : "none",
+        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.05)" : "1px solid transparent"
       }}
     >
       {/* Premium Logo Design */}
@@ -114,7 +121,7 @@ export default function Navbar() {
           textDecoration: "none",
           gap: "1rem",
           position: "relative",
-          zIndex: 10
+          zIndex: 1002 // Above mobile menu
         }}
         className="group"
       >
@@ -162,7 +169,7 @@ export default function Navbar() {
         </div>
       </a>
 
-      {/* Floating Island Nav */}
+      {/* Floating Island Nav (Desktop) */}
       <nav
         style={{
           background: scrolled ? "rgba(10,12,18,0.8)" : "rgba(10,12,18,0.4)",
@@ -230,7 +237,7 @@ export default function Navbar() {
       </nav>
 
       {/* Right Action */}
-      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "1rem", position: "relative", zIndex: 1002 }}>
         <a
           href="#contact"
           onClick={(e) => scrollToSection(e, "#contact", "Contact")}
@@ -263,25 +270,127 @@ export default function Navbar() {
           Let's Talk
         </a>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Menu Toggle Button */}
         <button
+          onClick={toggleMobileMenu}
           style={{
             display: "none",
-            background: "rgba(255,255,255,0.03)",
+            background: mobileMenuOpen ? "#22d3ee" : "rgba(255,255,255,0.03)",
             border: "1px solid rgba(255,255,255,0.08)",
-            padding: "0.8rem",
+            padding: "0.7rem",
             borderRadius: "12px",
             cursor: "pointer",
             flexDirection: "column",
-            gap: "4px",
+            gap: "5px",
             backdropFilter: "blur(10px)",
+            transition: "all 0.3s ease",
+            width: 44,
+            height: 44,
+            alignItems: "center",
+            justifyContent: "center"
           }}
           className="mobile-toggle"
         >
-          <div style={{ width: 18, height: 1.5, background: "#fff", borderRadius: 10 }} />
-          <div style={{ width: 14, height: 1.5, background: "#fff", borderRadius: 10, alignSelf: "flex-end" }} />
+          <motion.div 
+            animate={mobileMenuOpen ? { rotate: 45, y: 6.5 } : { rotate: 0, y: 0 }}
+            style={{ width: 20, height: 2, background: mobileMenuOpen ? "#000" : "#fff", borderRadius: 10 }} 
+          />
+          <motion.div 
+            animate={mobileMenuOpen ? { opacity: 0 } : { opacity: 1 }}
+            style={{ width: 14, height: 2, background: "#fff", borderRadius: 10, alignSelf: "center" }} 
+          />
+          <motion.div 
+            animate={mobileMenuOpen ? { rotate: -45, y: -6.5 } : { rotate: 0, y: 0 }}
+            style={{ width: 20, height: 2, background: mobileMenuOpen ? "#000" : "#fff", borderRadius: 10 }} 
+          />
         </button>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: "100vh",
+              background: "rgba(7, 8, 12, 0.98)",
+              backdropFilter: "blur(20px)",
+              zIndex: 1001,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "2.5rem",
+              padding: "2rem"
+            }}
+          >
+            {navLinks.map((link, i) => (
+              <motion.a
+                key={link.label}
+                href={link.href}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                onClick={(e) => scrollToSection(e, link.href, link.label)}
+                style={{
+                  fontSize: "2.5rem",
+                  fontWeight: 900,
+                  color: activeSection === link.label ? "#22d3ee" : "#fff",
+                  textDecoration: "none",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  letterSpacing: "-0.04em",
+                  position: "relative"
+                }}
+              >
+                {link.label}
+                {activeSection === link.label && (
+                  <motion.div
+                    layoutId="mobileNavActive"
+                    style={{
+                      position: "absolute",
+                      bottom: -8,
+                      left: 0,
+                      right: 0,
+                      height: 4,
+                      background: "#22d3ee",
+                      borderRadius: 10
+                    }}
+                  />
+                )}
+              </motion.a>
+            ))}
+            
+            <motion.a
+              href="#contact"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
+              onClick={(e) => scrollToSection(e, "#contact", "Contact")}
+              style={{
+                marginTop: "2rem",
+                padding: "1.2rem 3rem",
+                background: "linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)",
+                borderRadius: "100px",
+                color: "#000",
+                fontWeight: 800,
+                fontSize: "1rem",
+                textDecoration: "none",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em"
+              }}
+            >
+              Let's Talk
+            </motion.a>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <style>{`
         @media (max-width: 1024px) {

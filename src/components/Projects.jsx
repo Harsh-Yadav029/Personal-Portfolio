@@ -491,32 +491,6 @@ export default function Projects() {
             </div>
 
             {/* Live count badge */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.75rem",
-                padding: "0.6rem 1.2rem",
-                border: "1px solid rgba(255,255,255,0.07)",
-                borderRadius: 10,
-                background: "rgba(255,255,255,0.02)",
-                fontFamily: "monospace",
-              }}
-            >
-              <div
-                style={{
-                  width: 7,
-                  height: 7,
-                  borderRadius: "50%",
-                  background: "#4ade80",
-                  boxShadow: "0 0 10px rgba(74,222,128,0.7)",
-                  animation: "projectPulse 2s infinite",
-                }}
-              />
-              <span style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.3)", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                {projects.length} Live Projects
-              </span>
-            </div>
           </div>
 
           {/* Divider */}
