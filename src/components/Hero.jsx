@@ -152,7 +152,7 @@ export default function Hero() {
               color: "#e8eaf0",
               margin: 0,
             }}>
-              Full Stack +
+              Full Stack
             </h1>
           </motion.div>
 
@@ -173,7 +173,7 @@ export default function Hero() {
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
             }}>
-              AI Engineer
+              Engineer
             </h1>
           </motion.div>
         </div>

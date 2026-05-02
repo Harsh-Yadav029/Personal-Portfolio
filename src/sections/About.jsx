@@ -127,7 +127,7 @@ export default function About() {
               letterSpacing: "0.02em",
               margin: 0,
             }}>
-              Full-Stack Developer &amp; AI Engineer
+              Full-Stack Developer building AI-powered systems.
             </p>
 
             {/* Bio */}
